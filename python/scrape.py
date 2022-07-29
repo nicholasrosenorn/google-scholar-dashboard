@@ -1,12 +1,14 @@
 from bs4 import BeautifulSoup
 import requests
+import pandas as pd
 
 
-def main():
-    soup = instantiate_soup()
+def concat_data(URL):
+    soup = instantiate_soup(URL)
     name, sub_header, labels = get_profile_header(soup)
     table_dict = get_publications(soup)
-    return
+    pubs = pd.DataFrame(table_dict)
+    return pubs.to_html()
 
 def instantiate_soup(URL):
     r = requests.get(URL)
@@ -15,12 +17,12 @@ def instantiate_soup(URL):
 
 def get_profile_header(soup):
     name = soup.find('div', attrs = {'id': 'gsc_prf_inw'}).text
-    sub_header = soup.find('div', attrs = {'id':'gsc_prf_il'}).text
+    sub_header = soup.find('div', attrs = {'class':'gsc_prf_il'}).text
     labels = [i.text for i in soup.find_all('a', attrs={'class':'gsc_prf_inta gs_ibl'})]
     return name, sub_header, labels
 
 def get_publications(soup):
-    table = soup.find('div', attrs={'id':'gsc_a_b'})
+    table = soup.find('tbody', attrs={'id':'gsc_a_b'})
     titles = [row.text for row in table.findAll('a', attrs={'class': 'gsc_a_at'})]
     titles_urls = [row['href'] for row in table.findAll('a', attrs={'class': 'gsc_a_at'})]
     temp = [row.text for row in table.findAll('div', attrs={'class': 'gs_gray'})]

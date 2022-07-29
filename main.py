@@ -3,8 +3,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import pandas as pd
-from zmq import LOOPBACK_FASTPATH
+from python.scrape import concat_data
 
 app = FastAPI()
 
@@ -20,8 +19,8 @@ async def search(request: Request):
 @app.post("/search", response_class=HTMLResponse)
 async def search(request: Request, url: str = Form()):
     result = url
-    print("CHECK CHECK CHECK")
-    response = templates.TemplateResponse("search.html", {"request": request, 'result': result}) 
+    table = concat_data(result)
+    response = templates.TemplateResponse("search.html", {"request": request, 'result': table}) 
     return response
 
 @app.get("/result", response_class=HTMLResponse)

@@ -1,6 +1,6 @@
 FROM python:3.10-slim-bullseye
 
-RUN python -m pip install fastapi "uvicorn[standard]" jinja2 pandas plotly bs4 html5lib  
+RUN python -m pip install fastapi "uvicorn[standard]" jinja2 pandas plotly bs4 html5lib requests python-multipart
 
 COPY . .
 
